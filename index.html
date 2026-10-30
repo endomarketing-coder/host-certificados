@@ -83,7 +83,7 @@ input:focus, select:focus, textarea:focus {
   border-color: #594535;
   background: #fff;
 }
-textarea { min-height: 90px; resize: vertical; line-height: 1.42; }
+textarea { min-height: 110px; resize: vertical; line-height: 1.42; }
 
 .checks {
   display: grid;
@@ -220,9 +220,9 @@ button:active { transform: scale(0.99); }
   z-index: 3;
 }
 
-/* Títulos forçados para Arial */
+/* Títulos Forçados para Arial */
 .heading {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif !important;
   font-size: clamp(12px, 1.8vw, 22px);
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -231,7 +231,7 @@ button:active { transform: scale(0.99); }
 }
 
 .subheading {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif !important;
   font-size: clamp(17px, 2.75vw, 34px);
   font-weight: 900;
   line-height: 1.05;
@@ -243,7 +243,7 @@ button:active { transform: scale(0.99); }
 
 .name-wrapper {
   width: 100%;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   overflow: visible;
   min-height: clamp(34px, 5.2vw, 68px);
 }
@@ -260,29 +260,38 @@ button:active { transform: scale(0.99); }
 }
 
 .values-line {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif !important;
   font-size: clamp(9px, 1.15vw, 14px);
   line-height: 1.36;
   color: #111;
-  margin: 0 0 14px;
+  margin: 0;
   min-height: 1em;
 }
 .values-line strong {
   font-weight: 700;
 }
 
+/* Container Flexível para centralizar e ajustar o texto */
+.message-wrapper {
+  flex: 1; /* Ocupa todo o espaço vertical disponível */
+  display: flex;
+  align-items: center; /* Centraliza verticalmente quando há pouco texto */
+  width: 100%;
+  margin: 12px 0;
+  overflow: hidden;
+}
+
 .message {
-  font-family: Arial, sans-serif;
-  font-size: clamp(8.5px, 1.08vw, 13.2px);
+  font-family: Arial, Helvetica, sans-serif !important;
   line-height: 1.38;
   color: #111;
   white-space: pre-wrap;
-  margin: 0 0 18px;
-  min-height: 1em;
+  margin: 0;
+  width: 100%;
 }
 
 .place-date {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif !important;
   font-size: clamp(9px, 1.15vw, 14px);
   color: #111;
   margin: 0;
@@ -335,25 +344,25 @@ button:active { transform: scale(0.99); }
 
     <div class="field">
       <label for="employee">Nome completo do colaborador</label>
-      <input id="employee" type="text" placeholder="Ex: Karine Ferreira Magalhães" value="">
+      <input id="employee" type="text" value="">
     </div>
 
     <div class="field">
       <span class="legend">Valores vivenciados</span>
       <div class="checks" id="values">
-        <label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
-        <label><input type="checkbox" value="União">União</label>
         <label><input type="checkbox" value="Confiança">Confiança</label>
         <label><input type="checkbox" value="Valorização das pessoas">Valorização das pessoas</label>
         <label><input type="checkbox" value="Simplicidade e humildade">Simplicidade e humildade</label>
         <label><input type="checkbox" value="Paixão em servir">Paixão em servir</label>
+        <label><input type="checkbox" value="União">União</label>
+        <label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
         <label><input type="checkbox" value="Ensinar e aprender">Ensinar e aprender</label>
       </div>
     </div>
 
     <div class="field">
       <label for="message">Justificativa / Mensagem</label>
-      <textarea id="message" placeholder="Ex: Sua organização, atenção aos detalhes e busca constante pela melhoria dos processos fortalecem o trabalho em equipe, elevam os padrões de qualidade e contribuem para os resultados da nossa operação."></textarea>
+      <textarea id="message"></textarea>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -399,7 +408,11 @@ button:active { transform: scale(0.99); }
             <strong id="previewValues"></strong>
           </p>
 
-          <p class="message" id="previewMessage"></p>
+          <!-- Wrapper flexível para a mensagem -->
+          <div class="message-wrapper" id="messageWrapper">
+            <p class="message" id="previewMessage"></p>
+          </div>
+          
           <p class="place-date" id="placeDate"></p>
         </div>
 
@@ -473,7 +486,7 @@ function tabs() {
   });
   const add = document.createElement("button");
   add.className = "add";
-  add.textContent = "+ Adicionar outro";
+  add.textContent = "+ Adicionar";
   add.onclick = () => {
     readForm();
     certificates.push(blankCertificate());
@@ -512,6 +525,23 @@ function fitName() {
   }
 }
 
+/* Nova função para ajustar a mensagem dinamicamente */
+function fitMessage() {
+  const el = $("previewMessage");
+  const wrapper = $("messageWrapper");
+  if (!el || !wrapper) return;
+
+  // Tamanho base máximo amigável para pouco texto
+  let size = Math.min(20, wrapper.clientWidth * 0.038); 
+  el.style.fontSize = size + "px";
+
+  // Reduz até caber na altura disponível
+  while (el.scrollHeight > wrapper.clientHeight && size > 9) {
+    size -= 0.5;
+    el.style.fontSize = size + "px";
+  }
+}
+
 function update() {
   readForm();
   const c = certificates[active];
@@ -540,6 +570,7 @@ function update() {
   }
 
   fitName();
+  fitMessage(); /* Chama o ajuste dinâmico do texto */
 }
 
 /* Evento de Deletar Certificado */
@@ -560,7 +591,11 @@ $("deleteBtn").onclick = () => {
 ids.forEach(id => $(id).addEventListener("input", update));
 $("values").addEventListener("change", update);
 $("house").addEventListener("change", update);
-window.addEventListener("resize", fitName);
+
+window.addEventListener("resize", () => {
+  fitName();
+  fitMessage();
+});
 
 /* Inicialização */
 certificates = [blankCertificate()];
