@@ -267,7 +267,7 @@ button:active { transform: scale(0.99); }
 .name-wrapper {
   flex: 0 0 auto;
   width: 100%;
-  margin: 0 0 1.8cqw;
+  margin: 0 0 2.4cqw;
   overflow: hidden;
   min-height: 0;
   display: block;
@@ -276,7 +276,7 @@ button:active { transform: scale(0.99); }
 
 .name {
   font-family: "Kunstler Script", "KunstlerLocal", cursive;
-  font-size: clamp(26px, 5.2cqw, 68px);
+  font-size: clamp(30px, 5.8cqw, 74px);
   font-weight: normal;
   line-height: 0.95;
   color: #0a0a0a;
@@ -295,7 +295,7 @@ button:active { transform: scale(0.99); }
   font-size: clamp(8px, 1.08cqw, 13.5px);
   line-height: 1.32;
   color: #111;
-  margin: 0 0 1.45cqw;
+  margin: 0 0 1.8cqw;
   min-height: 1em;
   text-align: left;
 }
@@ -312,7 +312,7 @@ button:active { transform: scale(0.99); }
   line-height: 1.36;
   color: #111;
   white-space: pre-wrap;
-  margin: 0 0 1.8cqw;
+  margin: 0 0 2.2cqw;
   min-height: 1em;
   text-align: left;
   overflow: hidden;
@@ -584,29 +584,38 @@ function fitBodyText() {
   const message = $("previewMessage");
   const date = $("placeDate");
   const content = $("certificate")?.querySelector(".content");
+
   if (!message || !date || !content) return;
 
   const text = message.textContent.trim();
-
-  // A referência usa corpo de texto relativamente compacto.
-  // Quanto mais texto, menor a fonte — mas sem deixar a tipografia pequena demais.
-  let size = 13.2;
   const length = text.length;
 
-  if (length > 110) size = 12.8;
-  if (length > 180) size = 12.3;
-  if (length > 260) size = 11.8;
-  if (length > 360) size = 11.2;
-  if (length > 480) size = 10.6;
-  if (length > 620) size = 10.0;
-  if (length > 780) size = 9.5;
+  let size;
 
-  // Limite físico: se ainda ultrapassar a área disponível, reduz suavemente.
-  const maxHeight = content.clientHeight * 0.25;
+  if (length <= 100) {
+    size = 15;
+  } else if (length <= 180) {
+    size = 14.5;
+  } else if (length <= 260) {
+    size = 14;
+  } else if (length <= 360) {
+    size = 13.5;
+  } else if (length <= 480) {
+    size = 13;
+  } else if (length <= 620) {
+    size = 12.5;
+  } else {
+    size = 12;
+  }
+
   message.style.fontSize = size + "px";
   date.style.fontSize = size + "px";
 
-  while (message.scrollHeight > maxHeight && size > 8.8) {
+  // Se mesmo assim o texto ocupar espaço demais,
+  // reduz aos poucos até caber.
+  const maxHeight = content.clientHeight * 0.30;
+
+  while (message.scrollHeight > maxHeight && size > 9.5) {
     size -= 0.2;
     message.style.fontSize = size + "px";
     date.style.fontSize = size + "px";
