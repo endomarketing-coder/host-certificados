@@ -180,9 +180,6 @@ button:active { transform: scale(0.99); }
   color: #000;
   isolation: isolate;
   user-select: none;
-
-  /* IMPORTANTE: os tamanhos abaixo passam a ser relativos ao próprio certificado,
-     e não à janela inteira do navegador. */
   container-type: inline-size;
 }
 
@@ -218,8 +215,6 @@ button:active { transform: scale(0.99); }
 
 .certificate.has-art .fallback { display: none; }
 
-/* Área de conteúdo: ocupa a mesma região útil do modelo e centraliza
-   o conjunto verticalmente. */
 .content {
   position: absolute;
   left: 5.8%;
@@ -236,7 +231,7 @@ button:active { transform: scale(0.99); }
   padding: 0 1.5%;
 }
 
-/* Título */
+/* Título: Arial, maiúsculo e negrito, com RECONHECIMENTO menor */
 .heading {
   font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(11px, 1.75cqw, 22px);
@@ -248,7 +243,6 @@ button:active { transform: scale(0.99); }
   text-transform: uppercase;
 }
 
-/* Título principal: maior que "RECONHECIMENTO" */
 .subheading {
   font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(17px, 2.85cqw, 35px);
@@ -260,7 +254,6 @@ button:active { transform: scale(0.99); }
   text-transform: uppercase;
 }
 
-/* Nome */
 .name-wrapper {
   width: 100%;
   margin: 0 0 1.8cqw;
@@ -284,7 +277,6 @@ button:active { transform: scale(0.99); }
   max-width: 100%;
 }
 
-/* Informações */
 .values-line,
 .message,
 .place-date {
@@ -320,7 +312,6 @@ button:active { transform: scale(0.99); }
   margin: 0;
 }
 
-/* Bloco da Assinatura */
 .signature-block {
   position: absolute;
   left: 5.8%;
@@ -348,7 +339,7 @@ button:active { transform: scale(0.99); }
   .panel { padding: 16px; }
   .checks { grid-template-columns: 1fr; }
 }
-
+</style>
 </head>
 <body>
 
@@ -549,7 +540,6 @@ function fitText(el, {
   const parent = el.parentElement;
   if (!parent) return;
 
-  // Começa grande quando há pouco texto e vai reduzindo apenas quando necessário.
   let size = Math.min(max, Math.max(min, parent.clientWidth * preferred));
   el.style.fontSize = size + "px";
 
@@ -569,8 +559,6 @@ function fitName() {
   const el = $("previewName");
   if (!el) return;
 
-  // O nome é a informação de maior destaque: cresce quando o nome é curto
-  // e encolhe suavemente quando o nome é longo.
   fitText(el, {
     min: 24,
     max: 68,
@@ -584,13 +572,10 @@ function fitMessage() {
   const content = $("certificate")?.querySelector(".content");
   if (!el || !content || !el.textContent.trim()) return;
 
-  // Define um limite de altura proporcional ao espaço disponível.
-  // Quanto mais texto, menor a fonte; quanto menos texto, maior a fonte.
   const available = content.clientHeight * 0.20;
-
   const length = el.textContent.trim().length;
-  let preferred = 0.11;
 
+  let preferred = 0.11;
   if (length <= 90) preferred = 0.125;
   else if (length <= 180) preferred = 0.112;
   else if (length <= 280) preferred = 0.102;
@@ -619,7 +604,6 @@ function fitValues() {
 }
 
 function fitAllText() {
-  // Espera o browser terminar de calcular a fonte e o tamanho do certificado.
   requestAnimationFrame(() => {
     fitName();
     fitValues();
