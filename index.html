@@ -37,10 +37,10 @@ body {
 .app {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr);
-  gap: 24px;
-  padding: 24px;
-  max-width: 1650px;
+  grid-template-columns: 400px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px;
+  max-width: 1500px;
   margin: auto;
 }
 
@@ -49,7 +49,7 @@ body {
   background: var(--panel-bg);
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 22px;
+  padding: 18px;
   height: max-content;
   box-shadow: 0 8px 30px rgba(0,0,0,0.05);
 }
@@ -150,33 +150,32 @@ button:active { transform: scale(0.99); }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .preview-head {
-  width: min(100%, 880px);
+  width: min(100%, 780px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11.5px;
+  font-size: 11px;
   color: #6d635a;
 }
 
 .stage {
-  width: min(100%, 880px);
-  padding: 14px;
+  width: min(100%, 780px);
+  padding: 10px;
   background: #dbd7d0;
   border-radius: 12px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.08);
 }
 
-/* ===== Certificado: layout responsivo ===== */
 .certificate {
   position: relative;
   width: 100%;
   aspect-ratio: 297 / 210;
   overflow: hidden;
-  background: #ffffff;
+  background: #fff;
   color: #000;
   isolation: isolate;
   user-select: none;
@@ -215,53 +214,64 @@ button:active { transform: scale(0.99); }
 
 .certificate.has-art .fallback { display: none; }
 
+/*
+ * O conteúdo segue a referência: esquerda, começando no topo.
+ * Não usamos justify-content:center, porque isso criava aquele "buraco"
+ * quando a justificativa era curta.
+ */
 .content {
   position: absolute;
   left: 5.8%;
-  top: 7%;
+  top: 8.8%;
   width: 58%;
-  height: 86%;
+  height: 84%;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-  text-align: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
   z-index: 3;
   overflow: hidden;
-  padding: 0 1.5%;
 }
 
-/* Título: Arial, maiúsculo e negrito, com RECONHECIMENTO menor */
+/* RECONHECIMENTO — fixo, menor */
 .heading {
+  flex: 0 0 auto;
+  width: 100%;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: clamp(11px, 1.75cqw, 22px);
+  font-size: clamp(11px, 1.72cqw, 21px);
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.045em;
   color: #0d0d0d;
-  margin: 0 0 0.4cqw;
+  margin: 0 0 0.5cqw;
   text-transform: uppercase;
+  text-align: left;
 }
 
+/* GUARDIÃO DOS VALORES — fixo, grande e sempre no topo */
 .subheading {
+  flex: 0 0 auto;
+  width: 100%;
   font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(17px, 2.85cqw, 35px);
   font-weight: 700;
   line-height: 0.98;
   letter-spacing: -0.025em;
   color: #050505;
-  margin: 0 0 2.2cqw;
+  margin: 0 0 2.6cqw;
   text-transform: uppercase;
+  text-align: left;
 }
 
 .name-wrapper {
+  flex: 0 0 auto;
   width: 100%;
   margin: 0 0 1.8cqw;
   overflow: hidden;
   min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  text-align: left;
 }
 
 .name {
@@ -273,24 +283,21 @@ button:active { transform: scale(0.99); }
   white-space: nowrap;
   margin: 0;
   display: inline-block;
-  transform-origin: center center;
+  transform-origin: left center;
   max-width: 100%;
-}
-
-.values-line,
-.message,
-.place-date {
-  font-family: Arial, Helvetica, sans-serif;
-  color: #111;
-  text-align: center;
-  width: 100%;
+  text-align: left;
 }
 
 .values-line {
-  font-size: clamp(8px, 1.12cqw, 14px);
-  line-height: 1.3;
-  margin: 0 0 1.35cqw;
+  flex: 0 0 auto;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(8px, 1.08cqw, 13.5px);
+  line-height: 1.32;
+  color: #111;
+  margin: 0 0 1.45cqw;
   min-height: 1em;
+  text-align: left;
 }
 
 .values-line strong {
@@ -298,18 +305,28 @@ button:active { transform: scale(0.99); }
 }
 
 .message {
-  font-size: clamp(8px, 1.06cqw, 13.2px);
-  line-height: 1.3;
+  flex: 0 0 auto;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(8.5px, 1.06cqw, 13.2px);
+  line-height: 1.36;
+  color: #111;
   white-space: pre-wrap;
-  margin: 0 0 1.35cqw;
+  margin: 0 0 1.8cqw;
   min-height: 1em;
+  text-align: left;
   overflow: hidden;
 }
 
 .place-date {
-  font-size: clamp(8px, 1.05cqw, 14px);
-  line-height: 1.2;
+  flex: 0 0 auto;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(8.5px, 1.06cqw, 13.2px);
+  line-height: 1.36;
+  color: #111;
   margin: 0;
+  text-align: left;
 }
 
 .signature-block {
@@ -327,11 +344,31 @@ button:active { transform: scale(0.99); }
   display: block;
 }
 
+@media (max-width: 1100px) {
+  .app {
+    grid-template-columns: 390px minmax(0, 1fr);
+    gap: 18px;
+    padding: 16px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+}
+
 @media (max-width: 900px) {
-  .app { grid-template-columns: 1fr; padding: 12px; }
+  .app {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+
   .panel { order: 1; }
   .preview-area { order: 2; }
-  .preview-head, .stage { width: 100%; }
+
+  .preview-head,
+  .stage {
+    width: 100%;
+  }
 }
 
 @media (max-width: 520px) {
@@ -371,12 +408,12 @@ button:active { transform: scale(0.99); }
     <div class="field">
       <span class="legend">Valores vivenciados</span>
       <div class="checks" id="values">
+        <label><input type="checkbox" value="União">União</label>
         <label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
         <label><input type="checkbox" value="União">União</label>
-        <label><input type="checkbox" value="Confiança">Confiança</label>
-        <label><input type="checkbox" value="Valorização das pessoas">Valorização das pessoas</label>
-        <label><input type="checkbox" value="Simplicidade e humildade">Simplicidade e humildade</label>
-        <label><input type="checkbox" value="Paixão em servir">Paixão em servir</label>
+        <label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
+        <label><input type="checkbox" value="União">União</label>
+        <label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
         <label><input type="checkbox" value="Ensinar e aprender">Ensinar e aprender</label>
       </div>
     </div>
@@ -425,7 +462,7 @@ button:active { transform: scale(0.99); }
           </div>
 
           <p class="values-line" id="valuesBlock" style="display: none;">
-            Reconhecemos por vivenciar nossos valores:<br>
+            <span id="previewValuesIntro">Reconhecemos por vivenciar nossos valores:</span><br>
             <strong id="previewValues"></strong>
           </p>
 
@@ -528,86 +565,72 @@ function datePt(s) {
   return `${d} de ${months[m - 1]} de ${y}`;
 }
 
-function fitText(el, {
-  min = 8,
-  max = 68,
-  preferred = 0.12,
-  step = 0.5,
-  maxHeight = null
-} = {}) {
-  if (!el || !el.textContent.trim()) return;
+function fitName() {
+  const el = $("previewName");
+  const wrapper = $("nameWrapper");
+  if (!el || !wrapper) return;
 
-  const parent = el.parentElement;
-  if (!parent) return;
-
-  let size = Math.min(max, Math.max(min, parent.clientWidth * preferred));
+  // Nome curto fica grande; nomes longos reduzem apenas o necessário.
+  let size = Math.min(68, wrapper.clientWidth * 0.145);
   el.style.fontSize = size + "px";
 
-  const fits = () => {
-    const widthFits = el.scrollWidth <= parent.clientWidth + 1;
-    const heightFits = maxHeight == null || el.scrollHeight <= maxHeight + 1;
-    return widthFits && heightFits;
-  };
-
-  while (!fits() && size > min) {
-    size -= step;
+  while (el.scrollWidth > wrapper.clientWidth && size > 24) {
+    size -= 0.5;
     el.style.fontSize = size + "px";
   }
 }
 
-function fitName() {
-  const el = $("previewName");
-  if (!el) return;
-
-  fitText(el, {
-    min: 24,
-    max: 68,
-    preferred: 0.16,
-    step: 0.5
-  });
-}
-
-function fitMessage() {
-  const el = $("previewMessage");
+function fitBodyText() {
+  const message = $("previewMessage");
+  const date = $("placeDate");
   const content = $("certificate")?.querySelector(".content");
-  if (!el || !content || !el.textContent.trim()) return;
+  if (!message || !date || !content) return;
 
-  const available = content.clientHeight * 0.20;
-  const length = el.textContent.trim().length;
+  const text = message.textContent.trim();
 
-  let preferred = 0.11;
-  if (length <= 90) preferred = 0.125;
-  else if (length <= 180) preferred = 0.112;
-  else if (length <= 280) preferred = 0.102;
-  else if (length <= 400) preferred = 0.092;
-  else preferred = 0.082;
+  // A referência usa corpo de texto relativamente compacto.
+  // Quanto mais texto, menor a fonte — mas sem deixar a tipografia pequena demais.
+  let size = 13.2;
+  const length = text.length;
 
-  fitText(el, {
-    min: 8,
-    max: 13.5,
-    preferred,
-    step: 0.25,
-    maxHeight: available
-  });
+  if (length > 110) size = 12.8;
+  if (length > 180) size = 12.3;
+  if (length > 260) size = 11.8;
+  if (length > 360) size = 11.2;
+  if (length > 480) size = 10.6;
+  if (length > 620) size = 10.0;
+  if (length > 780) size = 9.5;
+
+  // Limite físico: se ainda ultrapassar a área disponível, reduz suavemente.
+  const maxHeight = content.clientHeight * 0.25;
+  message.style.fontSize = size + "px";
+  date.style.fontSize = size + "px";
+
+  while (message.scrollHeight > maxHeight && size > 8.8) {
+    size -= 0.2;
+    message.style.fontSize = size + "px";
+    date.style.fontSize = size + "px";
+  }
 }
 
 function fitValues() {
   const el = $("valuesBlock");
   if (!el || el.style.display === "none") return;
 
-  fitText(el, {
-    min: 8,
-    max: 14,
-    preferred: 0.112,
-    step: 0.25
-  });
+  let size = 13;
+  el.style.fontSize = size + "px";
+
+  while (el.scrollWidth > el.parentElement.clientWidth && size > 9) {
+    size -= 0.25;
+    el.style.fontSize = size + "px";
+  }
 }
 
 function fitAllText() {
   requestAnimationFrame(() => {
     fitName();
     fitValues();
-    fitMessage();
+    fitBodyText();
   });
 }
 
@@ -620,6 +643,11 @@ function update() {
   const vals = joinPt(c.values);
   $("previewValues").textContent = vals;
   $("valuesBlock").style.display = vals ? "block" : "none";
+
+  const intro = c.values.length === 1
+    ? "Reconhecemos por vivenciar nosso valor:"
+    : "Reconhecemos por vivenciar nossos valores:";
+  $("previewValuesIntro").textContent = intro;
 
   $("previewMessage").textContent = c.message;
   
