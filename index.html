@@ -83,7 +83,7 @@ input:focus, select:focus, textarea:focus {
   border-color: #594535;
   background: #fff;
 }
-textarea { min-height: 110px; resize: vertical; line-height: 1.42; }
+textarea { min-height: 90px; resize: vertical; line-height: 1.42; }
 
 .checks {
   display: grid;
@@ -152,6 +152,7 @@ button:active { transform: scale(0.99); }
   align-items: center;
   gap: 12px;
 }
+
 .preview-head {
   width: min(100%, 880px);
   display: flex;
@@ -160,6 +161,7 @@ button:active { transform: scale(0.99); }
   font-size: 11.5px;
   color: #6d635a;
 }
+
 .stage {
   width: min(100%, 880px);
   padding: 14px;
@@ -168,6 +170,7 @@ button:active { transform: scale(0.99); }
   box-shadow: 0 6px 24px rgba(0,0,0,0.08);
 }
 
+/* ===== Certificado: layout responsivo ===== */
 .certificate {
   position: relative;
   width: 100%;
@@ -177,6 +180,10 @@ button:active { transform: scale(0.99); }
   color: #000;
   isolation: isolate;
   user-select: none;
+
+  /* IMPORTANTE: os tamanhos abaixo passam a ser relativos ao próprio certificado,
+     e não à janela inteira do navegador. */
+  container-type: inline-size;
 }
 
 .bg-art {
@@ -188,6 +195,7 @@ button:active { transform: scale(0.99); }
   z-index: 1;
   display: none;
 }
+
 .certificate.has-art .bg-art { display: block; }
 
 .fallback {
@@ -196,6 +204,7 @@ button:active { transform: scale(0.99); }
   z-index: 0;
   background: #fff;
 }
+
 .fallback::after {
   content: "";
   position: absolute;
@@ -206,105 +215,120 @@ button:active { transform: scale(0.99); }
   background: #613615;
   transform: rotate(7deg);
 }
+
 .certificate.has-art .fallback { display: none; }
 
+/* Área de conteúdo: ocupa a mesma região útil do modelo e centraliza
+   o conjunto verticalmente. */
 .content {
   position: absolute;
   left: 5.8%;
-  top: 8.8%;
+  top: 7%;
   width: 58%;
-  height: 84%;
+  height: 86%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
+  justify-content: center;
+  text-align: center;
   z-index: 3;
+  overflow: hidden;
+  padding: 0 1.5%;
 }
 
-/* Títulos Forçados para Arial */
+/* Título */
 .heading {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-size: clamp(12px, 1.8vw, 22px);
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(11px, 1.75cqw, 22px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.045em;
   color: #0d0d0d;
-  margin: 0 0 4px;
-}
-
-.subheading {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-size: clamp(17px, 2.75vw, 34px);
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  color: #050505;
-  margin: 0 0 24px;
+  margin: 0 0 0.4cqw;
   text-transform: uppercase;
 }
 
+/* Título principal: maior que "RECONHECIMENTO" */
+.subheading {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(17px, 2.85cqw, 35px);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  color: #050505;
+  margin: 0 0 2.2cqw;
+  text-transform: uppercase;
+}
+
+/* Nome */
 .name-wrapper {
   width: 100%;
-  margin: 0 0 16px;
-  overflow: visible;
-  min-height: clamp(34px, 5.2vw, 68px);
+  margin: 0 0 1.8cqw;
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .name {
   font-family: "Kunstler Script", "KunstlerLocal", cursive;
-  font-size: clamp(34px, 5.2vw, 68px);
+  font-size: clamp(26px, 5.2cqw, 68px);
   font-weight: normal;
-  line-height: 1.05;
+  line-height: 0.95;
   color: #0a0a0a;
   white-space: nowrap;
   margin: 0;
   display: inline-block;
-  transform-origin: left center;
+  transform-origin: center center;
+  max-width: 100%;
+}
+
+/* Informações */
+.values-line,
+.message,
+.place-date {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+  text-align: center;
+  width: 100%;
 }
 
 .values-line {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-size: clamp(9px, 1.15vw, 14px);
-  line-height: 1.36;
-  color: #111;
-  margin: 0;
+  font-size: clamp(8px, 1.12cqw, 14px);
+  line-height: 1.3;
+  margin: 0 0 1.35cqw;
   min-height: 1em;
 }
+
 .values-line strong {
   font-weight: 700;
 }
 
-/* Container Flexível para centralizar e ajustar o texto */
-.message-wrapper {
-  flex: 1; /* Ocupa todo o espaço vertical disponível */
-  display: flex;
-  align-items: center; /* Centraliza verticalmente quando há pouco texto */
-  width: 100%;
-  margin: 12px 0;
+.message {
+  font-size: clamp(8px, 1.06cqw, 13.2px);
+  line-height: 1.3;
+  white-space: pre-wrap;
+  margin: 0 0 1.35cqw;
+  min-height: 1em;
   overflow: hidden;
 }
 
-.message {
-  font-family: Arial, Helvetica, sans-serif !important;
-  line-height: 1.38;
-  color: #111;
-  white-space: pre-wrap;
-  margin: 0;
-  width: 100%;
-}
-
 .place-date {
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-size: clamp(9px, 1.15vw, 14px);
-  color: #111;
+  font-size: clamp(8px, 1.05cqw, 14px);
+  line-height: 1.2;
   margin: 0;
 }
 
-/* Bloco da Assinatura - Apenas Imagem */
+/* Bloco da Assinatura */
 .signature-block {
   position: absolute;
   left: 5.8%;
   bottom: 5.8%;
-  width: 180px;
+  width: clamp(105px, 15cqw, 180px);
   z-index: 4;
 }
+
 .signature-img {
   width: 100%;
   height: auto;
@@ -318,7 +342,13 @@ button:active { transform: scale(0.99); }
   .preview-area { order: 2; }
   .preview-head, .stage { width: 100%; }
 }
-</style>
+
+@media (max-width: 520px) {
+  .app { padding: 8px; }
+  .panel { padding: 16px; }
+  .checks { grid-template-columns: 1fr; }
+}
+
 </head>
 <body>
 
@@ -344,25 +374,25 @@ button:active { transform: scale(0.99); }
 
     <div class="field">
       <label for="employee">Nome completo do colaborador</label>
-      <input id="employee" type="text" value="">
+      <input id="employee" type="text" placeholder="Ex: Karine Ferreira Magalhães" value="">
     </div>
 
     <div class="field">
       <span class="legend">Valores vivenciados</span>
       <div class="checks" id="values">
+        <label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
+        <label><input type="checkbox" value="União">União</label>
         <label><input type="checkbox" value="Confiança">Confiança</label>
         <label><input type="checkbox" value="Valorização das pessoas">Valorização das pessoas</label>
         <label><input type="checkbox" value="Simplicidade e humildade">Simplicidade e humildade</label>
         <label><input type="checkbox" value="Paixão em servir">Paixão em servir</label>
-        <label><input type="checkbox" value="União">União</label>
-        <label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
         <label><input type="checkbox" value="Ensinar e aprender">Ensinar e aprender</label>
       </div>
     </div>
 
     <div class="field">
       <label for="message">Justificativa / Mensagem</label>
-      <textarea id="message"></textarea>
+      <textarea id="message" placeholder="Ex: Sua organização, atenção aos detalhes e busca constante pela melhoria dos processos fortalecem o trabalho em equipe, elevam os padrões de qualidade e contribuem para os resultados da nossa operação."></textarea>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -408,11 +438,7 @@ button:active { transform: scale(0.99); }
             <strong id="previewValues"></strong>
           </p>
 
-          <!-- Wrapper flexível para a mensagem -->
-          <div class="message-wrapper" id="messageWrapper">
-            <p class="message" id="previewMessage"></p>
-          </div>
-          
+          <p class="message" id="previewMessage"></p>
           <p class="place-date" id="placeDate"></p>
         </div>
 
@@ -486,7 +512,7 @@ function tabs() {
   });
   const add = document.createElement("button");
   add.className = "add";
-  add.textContent = "+ Adicionar";
+  add.textContent = "+ Adicionar outro";
   add.onclick = () => {
     readForm();
     certificates.push(blankCertificate());
@@ -511,35 +537,94 @@ function datePt(s) {
   return `${d} de ${months[m - 1]} de ${y}`;
 }
 
-function fitName() {
-  const el = $("previewName");
-  const wrapper = $("nameWrapper");
-  if (!el || !wrapper) return;
+function fitText(el, {
+  min = 8,
+  max = 68,
+  preferred = 0.12,
+  step = 0.5,
+  maxHeight = null
+} = {}) {
+  if (!el || !el.textContent.trim()) return;
 
-  let size = Math.min(68, wrapper.clientWidth * 0.145);
+  const parent = el.parentElement;
+  if (!parent) return;
+
+  // Começa grande quando há pouco texto e vai reduzindo apenas quando necessário.
+  let size = Math.min(max, Math.max(min, parent.clientWidth * preferred));
   el.style.fontSize = size + "px";
 
-  while (el.scrollWidth > wrapper.clientWidth && size > 16) {
-    size -= 1;
+  const fits = () => {
+    const widthFits = el.scrollWidth <= parent.clientWidth + 1;
+    const heightFits = maxHeight == null || el.scrollHeight <= maxHeight + 1;
+    return widthFits && heightFits;
+  };
+
+  while (!fits() && size > min) {
+    size -= step;
     el.style.fontSize = size + "px";
   }
 }
 
-/* Nova função para ajustar a mensagem dinamicamente */
+function fitName() {
+  const el = $("previewName");
+  if (!el) return;
+
+  // O nome é a informação de maior destaque: cresce quando o nome é curto
+  // e encolhe suavemente quando o nome é longo.
+  fitText(el, {
+    min: 24,
+    max: 68,
+    preferred: 0.16,
+    step: 0.5
+  });
+}
+
 function fitMessage() {
   const el = $("previewMessage");
-  const wrapper = $("messageWrapper");
-  if (!el || !wrapper) return;
+  const content = $("certificate")?.querySelector(".content");
+  if (!el || !content || !el.textContent.trim()) return;
 
-  // Tamanho base máximo amigável para pouco texto
-  let size = Math.min(20, wrapper.clientWidth * 0.038); 
-  el.style.fontSize = size + "px";
+  // Define um limite de altura proporcional ao espaço disponível.
+  // Quanto mais texto, menor a fonte; quanto menos texto, maior a fonte.
+  const available = content.clientHeight * 0.20;
 
-  // Reduz até caber na altura disponível
-  while (el.scrollHeight > wrapper.clientHeight && size > 9) {
-    size -= 0.5;
-    el.style.fontSize = size + "px";
-  }
+  const length = el.textContent.trim().length;
+  let preferred = 0.11;
+
+  if (length <= 90) preferred = 0.125;
+  else if (length <= 180) preferred = 0.112;
+  else if (length <= 280) preferred = 0.102;
+  else if (length <= 400) preferred = 0.092;
+  else preferred = 0.082;
+
+  fitText(el, {
+    min: 8,
+    max: 13.5,
+    preferred,
+    step: 0.25,
+    maxHeight: available
+  });
+}
+
+function fitValues() {
+  const el = $("valuesBlock");
+  if (!el || el.style.display === "none") return;
+
+  fitText(el, {
+    min: 8,
+    max: 14,
+    preferred: 0.112,
+    step: 0.25
+  });
+}
+
+function fitAllText() {
+  // Espera o browser terminar de calcular a fonte e o tamanho do certificado.
+  requestAnimationFrame(() => {
+    fitName();
+    fitValues();
+    fitMessage();
+  });
 }
 
 function update() {
@@ -569,8 +654,7 @@ function update() {
     $("certificate").classList.remove("has-art");
   }
 
-  fitName();
-  fitMessage(); /* Chama o ajuste dinâmico do texto */
+  fitAllText();
 }
 
 /* Evento de Deletar Certificado */
@@ -591,11 +675,7 @@ $("deleteBtn").onclick = () => {
 ids.forEach(id => $(id).addEventListener("input", update));
 $("values").addEventListener("change", update);
 $("house").addEventListener("change", update);
-
-window.addEventListener("resize", () => {
-  fitName();
-  fitMessage();
-});
+window.addEventListener("resize", fitAllText);
 
 /* Inicialização */
 certificates = [blankCertificate()];
