@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Certificados | Grupo HOST</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--ink:#211b17;--gold:#a77b36;--line:#e5dfd7;--muted:#766d65}
+*{box-sizing:border-box}body{margin:0;background:#f1efec;color:var(--ink);font-family:Arial,sans-serif}
+.app{min-height:100vh;display:grid;grid-template-columns:340px minmax(0,1fr);gap:22px;padding:22px;max-width:1600px;margin:auto}
+.panel{background:white;border:1px solid #e9e5df;border-radius:14px;padding:21px;height:max-content;box-shadow:0 5px 22px #30251b0b}
+h1{font-size:20px;margin:0 0 5px}.sub{font-size:12px;color:var(--muted);margin:0 0 18px;line-height:1.45}
+label,.legend{display:block;font-size:12px;font-weight:700;margin-bottom:6px}
+.field{margin:0 0 14px}input[type=text],input[type=date],select,textarea{width:100%;border:1px solid #dcd6cf;border-radius:7px;padding:10px 11px;font:13px Arial;color:#2a241f;background:#fff}
+textarea{min-height:78px;resize:vertical;line-height:1.4}.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;padding:10px;border:1px solid var(--line);border-radius:7px}
+.checks label{font-size:11px;font-weight:400;display:flex;gap:6px;align-items:flex-start;line-height:1.3;margin:0}.checks input{margin:1px 0 0;accent-color:#79502c}
+button{border:0;border-radius:8px;padding:11px 12px;font-size:12px;font-weight:700;cursor:pointer}.primary{background:#33251c;color:white}.secondary{background:#eee9e3;color:#34271f}.outline{background:white;border:1px solid #d9d1c8;color:#34271f}
+.actions{display:grid;gap:8px;margin-top:17px}.hint{font-size:10px;line-height:1.45;color:#837970;margin:12px 0 0}
+.certificate-list{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}.cert-tab{background:#eee9e3;color:#54483e;padding:7px 10px;border-radius:20px;font-size:11px}.cert-tab.active{background:#33251c;color:white}.add{background:#fff;border:1px dashed #b9aa9a;color:#49382b;padding:7px 10px;border-radius:20px;font-size:11px}
+.preview-area{min-width:0;display:flex;flex-direction:column;align-items:center;gap:10px}.preview-head{width:min(100%,850px);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#776e65}
+.stage{width:min(100%,850px);padding:12px;background:#e2dfda;border-radius:10px;box-shadow:0 4px 18px #34271b0c}
+.certificate{position:relative;width:100%;aspect-ratio:297/210;overflow:hidden;background:#fff;color:#111;isolation:isolate}
+.bg-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:-1;display:none}.certificate.has-art .bg-art{display:block}
+.fallback{position:absolute;inset:0;z-index:-2;background:#fff;overflow:hidden}.fallback:before{content:"";position:absolute;right:-8%;top:-28%;width:39%;height:160%;background:#713707;transform:rotate(8deg);border-left:5px solid #e9c995}.fallback:after{content:"";position:absolute;right:17%;bottom:-48%;width:43%;height:95%;border-radius:50%;background:#fff;border-top:6px solid #d8d2cb}
+.certificate.has-art .fallback{display:none}
+.content{position:absolute;left:4.2%;top:8.8%;width:67%;height:82%;display:flex;flex-direction:column;align-items:flex-start}
+.heading{font:700 clamp(11px,1.9vw,23px)/1.05 Arial,sans-serif;margin:0 0 5px;letter-spacing:.01em}
+.subheading{font:700 clamp(15px,2.65vw,34px)/1.08 Arial,sans-serif;margin:0 0 4.5%;max-width:70%;text-transform:uppercase}
+.name{font-family:"Kunstler Script","KunstlerLocal","URW Chancery L","Brush Script MT",cursive;font-size:clamp(24px,4.4vw,57px);line-height:1;white-space:nowrap;max-width:100%;width:100%;overflow:hidden;margin:0 0 3.5%;font-weight:400;color:#090909}
+.values-line{font:clamp(8px,1.02vw,13px)/1.35 Arial;margin:0 0 1%;max-width:88%}
+.values-line strong{font-weight:700}
+.message{font:clamp(8px,1.02vw,13px)/1.32 Arial;white-space:pre-wrap;max-width:88%;margin:0}
+.place-date{font:clamp(8px,1.02vw,13px) Arial;margin-top:3.5%}
+.signature-block{position:absolute;left:4.2%;bottom:5.2%;width:17%;text-align:center;z-index:2}
+.signature{max-width:100%;height:36px;object-fit:contain;display:block;margin:0 auto -2px}
+.signature-line{border-top:1px solid #d4d0ca;padding-top:3px;font:clamp(6px,.65vw,8px) Arial;text-transform:uppercase}
+.seal-fallback{position:absolute;right:19%;bottom:20%;width:15%;aspect-ratio:1;border:2px dotted #a88b48;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;color:#7d652e;font:italic clamp(9px,1.5vw,18px) Georgia;z-index:1}
+.certificate.has-art .seal-fallback{display:none}
+@media(max-width:850px){.app{grid-template-columns:1fr;padding:12px}.panel{order:1}.preview-area{order:2}.stage{padding:6px}.preview-head,.stage{width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="panel">
+<h1>Gerador de certificados</h1><p class="sub">Reconhecimento Guardião dos Valores · Grupo HOST</p>
+<div class="certificate-list" id="certificateList"></div>
+<div class="field"><label for="house">Para qual casa é este certificado?</label>
+<select id="house"><option value="">Selecione uma casa</option><option>Moleska</option><option>Giz</option><option>Hoots</option><option>Mézzi</option><option>Misaki</option><option>Mestre Sussa</option><option>CSC</option></select></div>
+<div class="field"><label for="employee">Nome completo do colaborador</label><input id="employee" type="text" placeholder="Digite o nome completo"></div>
+<div class="field"><span class="legend">Valores vivenciados</span><div class="checks" id="values">
+<label><input type="checkbox" value="Confiança">Confiança</label>
+<label><input type="checkbox" value="Valorização das pessoas">Valorização das pessoas</label>
+<label><input type="checkbox" value="Simplicidade e humildade">Simplicidade e humildade</label>
+<label><input type="checkbox" value="Paixão em servir">Paixão em servir</label>
+<label><input type="checkbox" value="União">União</label>
+<label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
+<label><input type="checkbox" value="Ensinar e aprender">Ensinar e aprender</label>
+</div></div>
+<div class="field"><label for="message">Justificativa / mensagem de reconhecimento</label><textarea id="message" placeholder="Escreva a justificativa do reconhecimento...">Sua organização, atenção aos detalhes e busca constante pela melhoria dos processos fortalecem o trabalho em equipe, elevam os padrões de qualidade e contribuem para os resultados da nossa operação.</textarea></div>
+<div class="field"><label for="city">Cidade</label><input id="city" type="text" value="Fortaleza"></div>
+<div class="field"><label for="date">Data</label><input id="date" type="date"></div>
+<div class="actions">
+<button class="primary" id="pdf">Baixar este certificado em PDF (A4)</button>
+<button class="secondary" id="png">Baixar este certificado em PNG</button>
+<button class="outline" id="allPdf">Baixar todos os certificados em um PDF</button>
+</div>
+<p class="hint">Dica: use “Adicionar certificado” para preparar outro colaborador. Cada certificado mantém seus próprios dados enquanto você alterna entre eles.</p>
+</aside>
+<main class="preview-area">
+<div class="preview-head"><strong>PRÉ-VISUALIZAÇÃO</strong><span>A4 · Paisagem · escala reduzida</span></div>
+<div class="stage"><section class="certificate" id="certificate">
+<div class="fallback"></div><img class="bg-art" id="art" alt="">
+<div class="content">
+<p class="heading">RECONHECIMENTO</p>
+<p class="subheading">GUARDIÃO DOS<br>VALORES</p>
+<h2 class="name" id="previewName">Nome do colaborador</h2>
+<p class="values-line">Reconhecemos por vivenciar nossos valores:<br><strong id="previewValues">Valores selecionados.</strong></p>
+<p class="message" id="previewMessage"></p>
+<p class="place-date" id="placeDate">Fortaleza, 22 de outubro de 2026.</p>
+</div>
+<div class="seal-fallback" id="sealFallback">Selo<br>da casa</div>
+<div class="signature-block"><img class="signature" id="signature" alt=""><div class="signature-line">Sócio fundador</div></div>
+</section></div>
+</main>
+</div>
+<script>
+/* CONFIGURAÇÃO: cole aqui os links públicos das artes de fundo de cada unidade.
+   Pode usar URL https://... ou caminho dentro do projeto, ex.: /assets/moleska.jpg.
+   A arte ideal já contém moldura, ondas, selo e logotipo; os textos são sobrepostos. */
+const HOUSE_ART={
+ "Moleska":"", "Giz":"", "Hoots":"", "Mézzi":"", "Misaki":"", "Mestre Sussa":"", "CSC":""
+};
+/* Link público da imagem PNG da assinatura/rubrica. */
+const SIGNATURE_URL="";
+/* Fonte: hospede o .ttf/.otf na pasta public/assets do projeto Vercel e informe o caminho.
+   Exemplo: /assets/KunstlerScript.ttf */
+const KUNSTLER_FONT_URL="";
+if(KUNSTLER_FONT_URL){
+ const face=new FontFace("KunstlerLocal",`url("${KUNSTLER_FONT_URL}")`);
+ face.load().then(f=>{document.fonts.add(f);fitName()}).catch(console.warn);
+}
+const $=id=>document.getElementById(id);
+const ids=["house","employee","message","city","date"];
+let certificates=[],active=0;
+function blankCertificate(){return {house:"",employee:"",values:[],message:$("message")?.value||"Sua organização, atenção aos detalhes e busca constante pela melhoria dos processos fortalecem o trabalho em equipe, elevam os padrões de qualidade e contribuem para os resultados da nossa operação.",city:"Fortaleza",date:new Date().toISOString().slice(0,10)}}
+function readForm(){if(!certificates[active])return;certificates[active]={house:$("house").value,employee:$("employee").value,values:[...document.querySelectorAll('#values input:checked')].map(x=>x.value),message:$("message").value,city:$("city").value,date:$("date").value}}
+function writeForm(c){$("house").value=c.house;$("employee").value=c.employee;$("message").value=c.message;$("city").value=c.city;$("date").value=c.date;document.querySelectorAll('#values input').forEach(x=>x.checked=c.values.includes(x.value));}
+function tabs(){const host=$("certificateList");host.innerHTML="";certificates.forEach((c,i)=>{const b=document.createElement("button");b.className="cert-tab"+(i===active?" active":"");b.textContent=`Certificado ${i+1}`;b.onclick=()=>{readForm();active=i;writeForm(certificates[i]);tabs();update()};host.append(b)});const add=document.createElement("button");add.className="add";add.textContent="+ Adicionar certificado";add.onclick=()=>{readForm();certificates.push(blankCertificate());active=certificates.length-1;writeForm(certificates[active]);tabs();update()};host.append(add)}
+function joinPt(a){return !a.length?"":a.length===1?a[0]:a.slice(0,-1).join(", ")+" e "+a[a.length-1]}
+function datePt(s){if(!s)return "____ de __________ de ______";const [y,m,d]=s.split("-").map(Number);return `${d} de ${["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"][m-1]} de ${y}`}
+function fitName(){const el=$("previewName");if(!el)return;let size=Math.min(57,el.parentElement.clientWidth*.105);el.style.fontSize=size+"px";while(el.scrollWidth>el.clientWidth&&size>12){size-=.5;el.style.fontSize=size+"px"}}
+function update(){readForm();const c=certificates[active];$("previewName").textContent=c.employee.trim()||"Nome do colaborador";$("previewValues").textContent=joinPt(c.values)||"Valores selecionados."; $("previewMessage").textContent=c.message;$("placeDate").textContent=`${c.city||"Fortaleza"}, ${datePt(c.date)}.`;const url=HOUSE_ART[c.house]||"";if(url){$("art").src=url;$("certificate").classList.add("has-art")}else{$("art").removeAttribute("src");$("certificate").classList.remove("has-art")}fitName()}
+ids.forEach(id=>$(id).addEventListener("input",update));$("values").addEventListener("change",update);$("house").addEventListener("change",update);window.addEventListener("resize",fitName);
+$("signature").src=SIGNATURE_URL;$("signature").style.display=SIGNATURE_URL?"block":"none";
+async function capture(){await document.fonts.ready;const imgs=[...$("certificate").querySelectorAll("img")].filter(i=>i.src);await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));return html2canvas($("certificate"),{scale:3,useCORS:true,backgroundColor:"#fff"})}
+function fileName(c,ext){const n=(c.employee||"colaborador").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-|-$/g,"");return `Certificado-${n}.${ext}`}
+async function makePdf(c){writeForm(c);update();const canvas=await capture();const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true});pdf.addImage(canvas.toDataURL("image/jpeg",.98),"JPEG",0,0,297,210,undefined,"FAST");return pdf}
+async function downloadSingle(kind){readForm();const c=certificates[active];if(!c.employee.trim()){alert("Preencha o nome do colaborador antes de exportar.");return}const button=$(kind);const label=button.textContent;button.disabled=true;button.textContent="Gerando...";try{if(kind==="pdf"){const pdf=await makePdf(c);pdf.save(fileName(c,"pdf"))}else{const canvas=await capture();const a=document.createElement("a");a.download=fileName(c,"png");a.href=canvas.toDataURL("image/png");a.click()}}catch(e){console.error(e);alert("Não foi possível exportar. Confira se as imagens externas permitem acesso CORS.")}finally{button.disabled=false;button.textContent=label;writeForm(certificates[active]);update()}}
+$("pdf").onclick=()=>downloadSingle("pdf");$("png").onclick=()=>downloadSingle("png");
+$("allPdf").onclick=async()=>{readForm();if(certificates.some(c=>!c.employee.trim())){alert("Preencha o nome de todos os colaboradores antes de baixar o PDF completo.");return}const b=$("allPdf"),label=b.textContent;b.disabled=true;b.textContent="Montando PDF...";try{const {jsPDF}=window.jspdf;let doc=null;for(let i=0;i<certificates.length;i++){writeForm(certificates[i]);update();const canvas=await capture();if(i===0)doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true});else doc.addPage("a4","landscape");doc.addImage(canvas.toDataURL("image/jpeg",.98),"JPEG",0,0,297,210,undefined,"FAST")}doc.save("Certificados-Grupo-HOST.pdf")}catch(e){console.error(e);alert("Não foi possível gerar o PDF completo.")}finally{b.disabled=false;b.textContent=label;writeForm(certificates[active]);update()}};
+certificates=[blankCertificate()];active=0;writeForm(certificates[0]);tabs();update();
+</script>
+</body></html>
