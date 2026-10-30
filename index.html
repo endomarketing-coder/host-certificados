@@ -139,4 +139,537 @@ button:active { transform: scale(0.99); }
   background: white;
   border: 1px dashed #b7aba0;
   color: #493b30;
-  padding: 6px
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+}
+
+/* Área do Certificado (Preview) */
+.preview-area {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.preview-head {
+  width: min(100%, 880px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #6d635a;
+}
+.stage {
+  width: min(100%, 880px);
+  padding: 14px;
+  background: #dbd7d0;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+}
+
+.certificate {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 297 / 210;
+  overflow: hidden;
+  background: #ffffff;
+  color: #000;
+  isolation: isolate;
+  user-select: none;
+}
+
+.bg-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 1;
+  display: none;
+}
+.certificate.has-art .bg-art { display: block; }
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #fff;
+}
+.fallback::after {
+  content: "";
+  position: absolute;
+  right: -5%;
+  top: -20%;
+  width: 38%;
+  height: 140%;
+  background: #613615;
+  transform: rotate(7deg);
+}
+.certificate.has-art .fallback { display: none; }
+
+.content {
+  position: absolute;
+  left: 5.8%;
+  top: 8.8%;
+  width: 58%;
+  height: 84%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 3;
+}
+
+/* Títulos forçados para Arial */
+.heading {
+  font-family: Arial, sans-serif;
+  font-size: clamp(12px, 1.8vw, 22px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #0d0d0d;
+  margin: 0 0 4px;
+}
+
+.subheading {
+  font-family: Arial, sans-serif;
+  font-size: clamp(17px, 2.75vw, 34px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #050505;
+  margin: 0 0 24px;
+  text-transform: uppercase;
+}
+
+.name-wrapper {
+  width: 100%;
+  margin: 0 0 18px;
+  overflow: visible;
+  min-height: clamp(34px, 5.2vw, 68px);
+}
+.name {
+  font-family: "Kunstler Script", "KunstlerLocal", cursive;
+  font-size: clamp(34px, 5.2vw, 68px);
+  font-weight: normal;
+  line-height: 1.05;
+  color: #0a0a0a;
+  white-space: nowrap;
+  margin: 0;
+  display: inline-block;
+  transform-origin: left center;
+}
+
+.values-line {
+  font-family: Arial, sans-serif;
+  font-size: clamp(9px, 1.15vw, 14px);
+  line-height: 1.36;
+  color: #111;
+  margin: 0 0 14px;
+  min-height: 1em;
+}
+.values-line strong {
+  font-weight: 700;
+}
+
+.message {
+  font-family: Arial, sans-serif;
+  font-size: clamp(8.5px, 1.08vw, 13.2px);
+  line-height: 1.38;
+  color: #111;
+  white-space: pre-wrap;
+  margin: 0 0 18px;
+  min-height: 1em;
+}
+
+.place-date {
+  font-family: Arial, sans-serif;
+  font-size: clamp(9px, 1.15vw, 14px);
+  color: #111;
+  margin: 0;
+}
+
+/* Bloco da Assinatura - Apenas Imagem */
+.signature-block {
+  position: absolute;
+  left: 5.8%;
+  bottom: 5.8%;
+  width: 180px;
+  z-index: 4;
+}
+.signature-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; padding: 12px; }
+  .panel { order: 1; }
+  .preview-area { order: 2; }
+  .preview-head, .stage { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="panel">
+    <h1>Gerador de Certificados</h1>
+    <p class="sub">Reconhecimento Guardião dos Valores · Grupo HOST</p>
+
+    <div class="certificate-list" id="certificateList"></div>
+
+    <div class="field">
+      <label for="house">Para qual casa é este certificado?</label>
+      <select id="house">
+        <option value="">Selecione uma casa</option>
+        <option value="Giz">Giz</option>
+        <option value="Moleska">Moleska</option>
+        <option value="Mézzi">Mézzi</option>
+        <option value="Misaki">Misaki</option>
+        <option value="Sussa">Sussa</option>
+        <option value="Hoots">Hoots</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="employee">Nome completo do colaborador</label>
+      <input id="employee" type="text" placeholder="Ex: Karine Ferreira Magalhães" value="">
+    </div>
+
+    <div class="field">
+      <span class="legend">Valores vivenciados</span>
+      <div class="checks" id="values">
+        <label><input type="checkbox" value="Excelência operacional">Excelência operacional</label>
+        <label><input type="checkbox" value="União">União</label>
+        <label><input type="checkbox" value="Confiança">Confiança</label>
+        <label><input type="checkbox" value="Valorização das pessoas">Valorização das pessoas</label>
+        <label><input type="checkbox" value="Simplicidade e humildade">Simplicidade e humildade</label>
+        <label><input type="checkbox" value="Paixão em servir">Paixão em servir</label>
+        <label><input type="checkbox" value="Ensinar e aprender">Ensinar e aprender</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="message">Justificativa / Mensagem</label>
+      <textarea id="message" placeholder="Ex: Sua organização, atenção aos detalhes e busca constante pela melhoria dos processos fortalecem o trabalho em equipe, elevam os padrões de qualidade e contribuem para os resultados da nossa operação."></textarea>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div class="field">
+        <label for="city">Cidade</label>
+        <input id="city" type="text" value="Fortaleza">
+      </div>
+      <div class="field">
+        <label for="date">Data</label>
+        <input id="date" type="date">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="pdf">Baixar este certificado em PDF (A4)</button>
+      <button class="secondary" id="png">Baixar em PNG (Alta Resolução)</button>
+      <button class="outline" id="allPdf">Baixar todos os certificados em um só PDF</button>
+      <button class="outline danger" id="deleteBtn">Excluir este certificado</button>
+    </div>
+  </aside>
+
+  <main class="preview-area">
+    <div class="preview-head">
+      <strong>PRÉ-VISUALIZAÇÃO EM TEMPO REAL</strong>
+      <span>Formato A4 Paisagem (297 × 210 mm)</span>
+    </div>
+
+    <div class="stage">
+      <section class="certificate" id="certificate">
+        <img class="bg-art" id="art" src="" alt="Fundo Certificado">
+        <div class="fallback"></div>
+
+        <div class="content">
+          <p class="heading">RECONHECIMENTO</p>
+          <p class="subheading">GUARDIÃO DOS<br>VALORES</p>
+
+          <div class="name-wrapper" id="nameWrapper">
+            <h2 class="name" id="previewName"></h2>
+          </div>
+
+          <p class="values-line" id="valuesBlock" style="display: none;">
+            Reconhecemos por vivenciar nossos valores:<br>
+            <strong id="previewValues"></strong>
+          </p>
+
+          <p class="message" id="previewMessage"></p>
+          <p class="place-date" id="placeDate"></p>
+        </div>
+
+        <div class="signature-block">
+          <img class="signature-img" id="signature" src="" alt="Assinatura">
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+const HOUSE_ART = {
+  "Giz": "https://i.imgur.com/xoB6VVp.png",
+  "Moleska": "https://i.imgur.com/MMeTHy0.png",
+  "Mézzi": "https://i.imgur.com/rdEXJ4T.png",
+  "Misaki": "https://i.imgur.com/pDbiTJ9.png",
+  "Sussa": "https://i.imgur.com/FabySOc.png",
+  "Mestre Sussa": "https://i.imgur.com/FabySOc.png",
+  "Hoots": "https://i.imgur.com/eGINCe6.png"
+};
+
+const SIGNATURE_URL = "https://i.imgur.com/8h8oT48.png";
+
+const $ = id => document.getElementById(id);
+const ids = ["house", "employee", "message", "city", "date"];
+let certificates = [];
+let active = 0;
+
+function blankCertificate() {
+  return {
+    house: "",
+    employee: "",
+    values: [],
+    message: "",
+    city: "Fortaleza",
+    date: new Date().toISOString().slice(0, 10)
+  };
+}
+
+function readForm() {
+  if (!certificates[active]) return;
+  certificates[active] = {
+    house: $("house").value,
+    employee: $("employee").value,
+    values: [...document.querySelectorAll('#values input:checked')].map(x => x.value),
+    message: $("message").value,
+    city: $("city").value,
+    date: $("date").value
+  };
+}
+
+function writeForm(c) {
+  $("house").value = c.house;
+  $("employee").value = c.employee;
+  $("message").value = c.message;
+  $("city").value = c.city;
+  $("date").value = c.date;
+  document.querySelectorAll('#values input').forEach(x => x.checked = c.values.includes(x.value));
+}
+
+function tabs() {
+  const host = $("certificateList");
+  host.innerHTML = "";
+  certificates.forEach((c, i) => {
+    const b = document.createElement("button");
+    b.className = "cert-tab" + (i === active ? " active" : "");
+    b.textContent = `Colaborador ${i + 1}`;
+    b.onclick = () => { readForm(); active = i; writeForm(certificates[i]); tabs(); update(); };
+    host.append(b);
+  });
+  const add = document.createElement("button");
+  add.className = "add";
+  add.textContent = "+ Adicionar outro";
+  add.onclick = () => {
+    readForm();
+    certificates.push(blankCertificate());
+    active = certificates.length - 1;
+    writeForm(certificates[active]);
+    tabs();
+    update();
+  };
+  host.append(add);
+}
+
+function joinPt(a) {
+  if (!a.length) return "";
+  if (a.length === 1) return a[0] + ".";
+  return a.slice(0, -1).join(", ") + " e " + a[a.length - 1] + ".";
+}
+
+function datePt(s) {
+  if (!s) return "";
+  const [y, m, d] = s.split("-").map(Number);
+  const months = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+  return `${d} de ${months[m - 1]} de ${y}`;
+}
+
+function fitName() {
+  const el = $("previewName");
+  const wrapper = $("nameWrapper");
+  if (!el || !wrapper) return;
+
+  let size = Math.min(68, wrapper.clientWidth * 0.145);
+  el.style.fontSize = size + "px";
+
+  while (el.scrollWidth > wrapper.clientWidth && size > 16) {
+    size -= 1;
+    el.style.fontSize = size + "px";
+  }
+}
+
+function update() {
+  readForm();
+  const c = certificates[active];
+
+  $("previewName").textContent = c.employee.trim();
+  
+  const vals = joinPt(c.values);
+  $("previewValues").textContent = vals;
+  $("valuesBlock").style.display = vals ? "block" : "none";
+
+  $("previewMessage").textContent = c.message;
+  
+  if (c.city && c.date) {
+    $("placeDate").textContent = `${c.city}, ${datePt(c.date)}.`;
+  } else {
+    $("placeDate").textContent = "";
+  }
+
+  const url = HOUSE_ART[c.house] || "";
+  if (url) {
+    $("art").src = url;
+    $("certificate").classList.add("has-art");
+  } else {
+    $("art").removeAttribute("src");
+    $("certificate").classList.remove("has-art");
+  }
+
+  fitName();
+}
+
+/* Evento de Deletar Certificado */
+$("deleteBtn").onclick = () => {
+  if (certificates.length <= 1) {
+    alert("Você precisa ter pelo menos um certificado na lista.");
+    return;
+  }
+  if (confirm("Tem certeza que deseja excluir este certificado?")) {
+    certificates.splice(active, 1);
+    active = Math.max(0, active - 1);
+    writeForm(certificates[active]);
+    tabs();
+    update();
+  }
+};
+
+ids.forEach(id => $(id).addEventListener("input", update));
+$("values").addEventListener("change", update);
+$("house").addEventListener("change", update);
+window.addEventListener("resize", fitName);
+
+/* Inicialização */
+certificates = [blankCertificate()];
+active = 0;
+writeForm(certificates[0]);
+tabs();
+$("signature").src = SIGNATURE_URL;
+update();
+
+/* Funções de Download */
+async function capture() {
+  await document.fonts.ready;
+  const imgs = [...$("certificate").querySelectorAll("img")].filter(i => i.src);
+  await Promise.all(imgs.map(i => i.decode().catch(() => {})));
+  
+  return html2canvas($("certificate"), {
+    scale: 3.5,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: "#ffffff"
+  });
+}
+
+function fileName(c, ext) {
+  const n = (c.employee || "colaborador").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `Certificado-${c.house || "HOST"}-${n}.${ext}`;
+}
+
+async function makePdf(c) {
+  writeForm(c);
+  update();
+  const canvas = await capture();
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+  pdf.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", 0, 0, 297, 210, undefined, "FAST");
+  return pdf;
+}
+
+async function downloadSingle(kind) {
+  readForm();
+  const c = certificates[active];
+  if (!c.employee.trim() || !c.house) {
+    alert("Preencha a unidade (casa) e o nome do colaborador antes de exportar.");
+    return;
+  }
+  const button = $(kind);
+  const label = button.textContent;
+  button.disabled = true;
+  button.textContent = "Gerando arquivo...";
+
+  try {
+    if (kind === "pdf") {
+      const pdf = await makePdf(c);
+      pdf.save(fileName(c, "pdf"));
+    } else {
+      const canvas = await capture();
+      const a = document.createElement("a");
+      a.download = fileName(c, "png");
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    }
+  } catch (e) {
+    console.error(e);
+    alert("Erro ao exportar. Verifique a conexão com as imagens.");
+  } finally {
+    button.disabled = false;
+    button.textContent = label;
+    writeForm(certificates[active]);
+    update();
+  }
+}
+
+$("pdf").onclick = () => downloadSingle("pdf");
+$("png").onclick = () => downloadSingle("png");
+
+$("allPdf").onclick = async () => {
+  readForm();
+  if (certificates.some(c => !c.employee.trim() || !c.house)) {
+    alert("Preencha a casa e o nome de todos os colaboradores antes de baixar.");
+    return;
+  }
+  const b = $("allPdf");
+  const label = b.textContent;
+  b.disabled = true;
+  b.textContent = "Compilando PDF unificado...";
+
+  try {
+    const { jsPDF } = window.jspdf;
+    let doc = null;
+
+    for (let i = 0; i < certificates.length; i++) {
+      writeForm(certificates[i]);
+      update();
+      const canvas = await capture();
+      if (i === 0) doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+      else doc.addPage("a4", "landscape");
+      doc.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", 0, 0, 297, 210, undefined, "FAST");
+    }
+    doc.save("Certificados-Grupo-HOST.pdf");
+  } catch (e) {
+    console.error(e);
+    alert("Erro ao compilar o PDF.");
+  } finally {
+    b.disabled = false;
+    b.textContent = label;
+    writeForm(certificates[active]);
+    update();
+  }
+};
+</script>
+</body>
+</html>
